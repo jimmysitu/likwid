@@ -236,7 +236,7 @@ checkAccess(bstring reg, RegisterIndex index, RegisterType oldtype, int force)
         DEBUG_PRINT(DEBUGLEV_INFO, WARNING: The device for counter %s does not exist ,bdata(reg));
         return NOTYPE;
     }
-    if ((type != THERMAL) && (type != VOLTAGE) && (type != POWER) && (type != WBOX0FIX))
+    if ((type != THERMAL) && (type != VOLTAGE) && (type != PERFSTAT) && (type != POWER) && (type != WBOX0FIX))
     {
         int check_settings = 1;
         uint32_t reg = counter_map[index].configRegister;
@@ -292,7 +292,7 @@ checkAccess(bstring reg, RegisterIndex index, RegisterType oldtype, int force)
 /*                    currentConfig[cpu_id][index] = 0x0ULL;*/
 /*                }*/
             }
-            else if ((force == 0) && ((type != FIXED)&&(type != THERMAL)&&(type != VOLTAGE)&&(type != POWER)&&(type != WBOX0FIX)&&(type != MBOX0TMP)))
+            else if ((force == 0) && ((type != FIXED)&&(type != THERMAL)&&(type != VOLTAGE)&&(type != PERFSTAT)&&(type != POWER)&&(type != WBOX0FIX)&&(type != MBOX0TMP)&&(type != MBOX0SAP)))
             {
                 fprintf(stderr, "ERROR: The selected register %s is in use.\n", counter_map[index].key);
                 fprintf(stderr, "Please run likwid with force option (-f, --force) to overwrite settings\n");
@@ -300,7 +300,7 @@ checkAccess(bstring reg, RegisterIndex index, RegisterType oldtype, int force)
             }
         }
     }
-    else if ((type == POWER) || (type == WBOX0FIX) || (type == THERMAL) || (type == VOLTAGE))
+    else if ((type == POWER) || (type == WBOX0FIX) || (type == THERMAL) || (type == VOLTAGE) || (type == PERFSTAT))
     {
         err = HPMread(testcpu, MSR_DEV, counter_map[index].counterRegister, &tmp);
         if (err != 0)
@@ -699,7 +699,9 @@ calculateResult(int groupId, int eventId, int threadId)
         result *= power_getEnergyUnit(getCounterTypeOffset(event->index));
     }
     else if ((counter_map[event->index].type == THERMAL) ||
-             (counter_map[event->index].type == MBOX0TMP))
+             (counter_map[event->index].type == PERFSTAT) ||
+             (counter_map[event->index].type == MBOX0TMP) ||
+             (counter_map[event->index].type == MBOX0SAP))
     {
         result = (double)counter->counterData;
     }
@@ -2773,7 +2775,9 @@ perfmon_getResult(int groupId, int eventId, int threadId)
     if ((groupSet->groups[groupId].events[eventId].threadCounter[threadId].fullResult == 0) ||
         (groupSet->groups[groupId].events[eventId].type == THERMAL) ||
         (groupSet->groups[groupId].events[eventId].type == VOLTAGE) ||
+        (groupSet->groups[groupId].events[eventId].type == PERFSTAT) ||
         (groupSet->groups[groupId].events[eventId].type == MBOX0TMP) ||
+        (groupSet->groups[groupId].events[eventId].type == MBOX0SAP) ||
         (groupSet->groups[groupId].events[eventId].type == QBOX0FIX) ||
         (groupSet->groups[groupId].events[eventId].type == QBOX1FIX) ||
         (groupSet->groups[groupId].events[eventId].type == QBOX2FIX) ||

@@ -39,6 +39,7 @@
 #include <topology.h>
 #include <access.h>
 #include <voltage.h>
+#include <perfstat.h>
 #include <linux/version.h>
 
 #define IS_SKYLAKE_CLIENT(model) ((model) == SKYLAKE1 || \
@@ -1349,6 +1350,10 @@ int perfmon_stopCountersThread_skylake(int thread_id, PerfmonEventSet* eventSet)
                     CHECK_TEMP_READ_ERROR(voltage_read(cpu_id, &counter_result));
                     break;
 
+                case PERFSTAT:
+                    CHECK_TEMP_READ_ERROR(perfstat_read(cpu_id, &counter_result));
+                    break;
+                
                 case UBOXFIX:
                     if (haveLock)
                     {
@@ -1421,6 +1426,7 @@ int perfmon_stopCountersThread_skylake(int thread_id, PerfmonEventSet* eventSet)
                     break;
                 case MBOX0:
                 case MBOX0TMP:
+                case MBOX0SAP:
                     if (haveLock)
                     {
                         if (!cpuid_info.supportClientmem)
@@ -1590,6 +1596,11 @@ int perfmon_readCountersThread_skylake(int thread_id, PerfmonEventSet* eventSet)
                     CHECK_TEMP_READ_ERROR(voltage_read(cpu_id, &counter_result));
                     eventSet->events[i].threadCounter[thread_id].counterData = field64(counter_result, 0, box_map[type].regWidth);
                     break;
+                
+                case PERFSTAT:
+                    CHECK_TEMP_READ_ERROR(perfstat_read(cpu_id, &counter_result));
+                    eventSet->events[i].threadCounter[thread_id].counterData = field64(counter_result, 0, box_map[type].regWidth);
+                    break;
 
                 case UBOXFIX:
                 case WBOX0FIX:
@@ -1656,6 +1667,7 @@ int perfmon_readCountersThread_skylake(int thread_id, PerfmonEventSet* eventSet)
                     break;
                 case MBOX0:
                 case MBOX0TMP:
+                case MBOX0SAP:
                     if (haveLock)
                     {
                         if (!cpuid_info.supportClientmem)

@@ -87,6 +87,7 @@
 #define PCM_CLIENT_IMC_DRAM_IO_REQUESTS  (0x5048)
 #define PCM_CLIENT_IMC_DRAM_DATA_READS  (0x5050)
 #define PCM_CLIENT_IMC_DRAM_DATA_WRITES (0x5054)
+#define PCM_CLIENT_IMC_SA_PERFSTAT (0x5918)
 #define PCM_CLIENT_IMC_PP0_TEMP (0x597C)
 #define PCM_CLIENT_IMC_PP1_TEMP (0x5980)
 #define PCM_CLIENT_IMC_MMAP_SIZE (0x6000)
@@ -1096,6 +1097,10 @@ clientmem_read(AccessDataRecord *dRecord)
             break;
         case 0x04:
             data = (uint64_t)*((uint32_t *)(clientmem_addr + PCM_CLIENT_IMC_PP1_TEMP));
+            break;
+        case 0x05:
+            data = (uint64_t)*((uint32_t *)(clientmem_addr + PCM_CLIENT_IMC_SA_PERFSTAT));
+            data = (data>>24) & 0xFF;
             break;
         default:
             syslog(LOG_ERR, "Access to register 0x%X not allowed\n", reg);

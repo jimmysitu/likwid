@@ -97,14 +97,14 @@ typedef enum {
 } RegisterIndex;
 
 typedef enum {
-    PMC = 0, FIXED, PERF, THERMAL, VOLTAGE, METRICS,
+    PMC = 0, FIXED, PERF, THERMAL, VOLTAGE, PERFSTAT, METRICS,
     POWER, UNCORE, MBOX0,
     MBOX1, MBOX2, MBOX3,
     MBOX4, MBOX5, MBOX6, MBOX7,
     MBOX0FIX, MBOX1FIX, MBOX2FIX,
     MBOX3FIX, MBOX4FIX, MBOX5FIX,
     MBOX6FIX, MBOX7FIX,
-    MBOX0TMP,
+    MBOX0TMP, MBOX0SAP,
     BBOX0, BBOX1,
     RBOX0, RBOX1, RBOX2,
     WBOX,
@@ -168,6 +168,7 @@ static char* RegisterTypeNames[MAX_UNITS] = {
     [MBOX6FIX] = "Memory Controller 1 Channel 2 Fixed Counter",
     [MBOX7FIX] = "Memory Controller 1 Channel 3 Fixed Counter",
     [MBOX0TMP] = "PP0/PP1 Temperature Sensor",
+    [MBOX0SAP] = "System Agent Performance Status",
 #ifdef _ARCH_PPC
     [BBOX0] = "Memory controller synchronous (port 0 & 1)",
     [BBOX1] = "Memory controller synchronous (port 2 & 3)",
